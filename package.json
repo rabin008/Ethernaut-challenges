@@ -1,7 +1,7 @@
 {
   "name": "hardhat_ethernaut",
   "version": "1.0.0",
-  "description": "",
+  "description": "The following is a walkthrough for the Ethernaut challenges using the Hardhat setup.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -17,9 +17,20 @@
     "dotenv": "^16.0.1",
     "ethereum-waffle": "^3.4.4",
     "ethers": "^5.6.8",
-    "hardhat": "^2.9.7"
+    "hardhat": "^2.9.9"
   },
   "dependencies": {
     "@openzeppelin/contracts-ethereum-package": "^3.0.0"
-  }
+  },
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rabin008/Ethernaut-challenges.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rabin008/Ethernaut-challenges/issues"
+  },
+  "homepage": "https://github.com/rabin008/Ethernaut-challenges#readme"
 }
