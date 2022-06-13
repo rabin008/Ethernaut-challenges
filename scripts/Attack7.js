@@ -6,7 +6,7 @@ async function main() {
     "0xCC47D5dD4EcAAF96A7A4f7c8B72e029992EAd927" // This is the contract address that you get from starting your instance
   );
 
-  // You can check the balance of the contract in Rinkeby Etherscan
+  // You can check the balance of the contract in Rinkeby Etherscan or using provider like in Challenge 10
 
   // This is for the attacking contract
   const MyContract = await ethers.getContractFactory("ForceAttack");
@@ -20,7 +20,7 @@ async function main() {
 
   console.log(`Deployed contract to: ${contract.address}`);
 
-  // Check balance again in Rinkeby Etherscan
+  // Check balance again in Rinkeby Etherscan or using provider like in Challenge 10
 }
 
 // Recommended pattern to be able to use async/await everywhere

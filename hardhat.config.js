@@ -1,4 +1,5 @@
 require("@nomiclabs/hardhat-waffle");
+require("@nomiclabs/hardhat-ethers"); // to call getStorageAt function
 require("dotenv").config();
 
 // This is a sample Hardhat task. To learn how to create your own go to
@@ -25,6 +26,9 @@ module.exports = {
       },
       {
         version: "0.8.4",
+      },
+      {
+        version: "0.5.0",
       },
     ],
   },
