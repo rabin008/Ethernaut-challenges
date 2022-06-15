@@ -180,3 +180,49 @@ Error handling: https://docs.soliditylang.org/en/v0.8.9/control-structures.html?
 Sending Ether: https://docs.soliditylang.org/en/v0.8.9/security-considerations.html?highlight=transfer%20ether#sending-and-receiving-ether
 
 After you get setup and create a new instance, you can modify the contract address in the _Attack20.js_ (there is a comment next to it). This will allow to get access to the victim contract and see what the initial balance of the _owner_ is. Then it will deploy the attack contract and call the _setWithdrawPartner_ passing the contract address of the deployed conntract as an argument, therefore making this contract the current partner in the victim contract. Since the malicious _receive_ function in this attack contract doesn't allow to get pass this call because it drains all the gas through the _assert_ function, we will have completed the level. Finally, we call the _withdraw_ function to verify that indeed the balance of the owner is not changing anymore.
+
+## Challenge 21: Shop
+
+This level will be really useful to remember how _interfaces_ work in solidity. In very simple words, they establish how we are going to be able to interact with funcions, i.e, the visibility, name of the function and arguments but it diesn't specify the logic behind what is going to be doing. The importance of _interfaces_ rely in that they standardize how we'll be able to interact with function but not in how they are going to be implemented. Another takeaway from this challenge is that we have to be really careful when we are going to make external calls to contracts we have not defined. THe following link provides relevant information:
+
+https://www.educative.io/answers/what-is-solidity-interface
+
+After you get setup and create a new instance, you can modify the contract addresses in the _Attack21.js_ (there are comments next to them). This will allow to get access to the victim contract and see what the initial values of _price_ and _isSold_ are. Since the value of _isSold_ is already false, we just have to pay attention to the first condition in the if statement which verifies the value of _price_. However, if we look inside the if statement, we can see that there is a state change, we'll be able to exploit that by defining the _price_ function to be dependent on the value of _isSold_ just like we define the function in the attack contract. After we implement our attack contract and call the _buy_ function, we verify that the value of _price_ is indeed smaller than 100.
+
+## Challenge 22: Dex
+
+We will learn from this challenge how Dexes work and the importance of defining the _swap_amounts_ correctly. Additionaly, it will serve as an example to understand how operations with decimals work on solidity. First of all, we have to realize that the biggest vulnerability of this Dex is in the function _getSwapPrice_ since it's not using any price oracles, that is, it is assuming that the value of both token is always the same and that leads to a malicious actor being able to manipulate the Dex if they have a large amount of one token. That is reason why for this attack we will be swapping all of our tokens, each time getting more from the other token, being able to manipulate the market. The following two links are useful to understand Dexes and how to use data feeds to get prices of tokens.
+
+Dexes: https://en.wikipedia.org/wiki/Decentralized_finance#Decentralized_exchanges
+
+Chainlink Data Feeds: https://docs.chain.link/docs/get-the-latest-price/
+
+After you get setup and create a new instance, you can modify the contract's address in the _Attack22.js_ (there is a comment next to it). This will allow to get access to the victim contract and see the initial balances of your account and the contract. After that, we call the _approve_ function to allow the contract to use our token with the _transferFrom_ function. Since we have 10 tokens from each and the contract has 100 of each, we start by swapping all our tokens to the other. Doing the math, we will receive $10*100/100=10$ from the other token. So our updated balance will be 0 from one token and 20 from the other and the contract's balance will be 110 from one token and 90 from the other. The next swap will grant us $20*90/110=1024.4...=24$, here is where we see the effect of not dealing with decimals and after checking the contract balance of 86 of one token and 110 of the other, we see that we are starting to drain the contract's balance of one token. We continue to swap until we finish draining the balance of one token.
+
+## Challenge 23: Dex Two
+
+This challenge will be really similar to the previous one but with one very important difference that is the omission of the following require statement:
+
+```
+require((from == token1 && to == token2) || (from == token2 && to == token1), "Invalid tokens");
+```
+
+The require statement was critical for the purpose of the Dex, since it verified that only the two tokens created in the contract where the ones used. The removal of the line leads to several possible attacks from the creation of another malicious token that has no real value. Also, it is an important lesson to know that even if a contract implements the ERC-20 specs doesn't mean it's trustworthy. Specifically, if you design a Dex where anyone can create and use their own tokens, the correctenss of the Dex fully depends on the logic with which the swaps are made. The following links go in depth about the ERC-20 specs and represent one additional real attack that is kind of similar to this one:
+
+ERC-20 specs: https://eips.ethereum.org/EIPS/eip-20
+
+Similar attack: https://slowmist.medium.com/paraluni-incident-analysis-58be442a4f99
+
+After you get setup and create a new instance, you can modify the contract addresses in the _Attack23.js_ (there are comments next to them). This will allow to get access to the victim contract and deploy the attack contract. Also, it will allow to check the initial balances of your account and the contract. After that, we call the _approve_ function to allow the contract to use our token with the _transferFrom_ function. Since the attack contract has send the exact amount of tokens to our address and to the victim contract address, we just have to swap two times according to the respective ratios in the liquidity pool to drain the balance of the two tokens, Finally, we verify we have received the total amount of the two tokens while the contract's balance only has the malicious token we created.
+
+## Challenge 24: Puzzle Wallet
+
+This level will introduce us to upgradeable contracts, in this case, UUPS. A **proxy contract** in very general words is a contract that intends to keep the state of all the variables kept in storage. It always goes along with an **implementation contract** which tells the proxy contract what logic to use. These contracts are upgradeable in terms that they can change the logic from the implementation contract. As useful as they can be, they are risky since they come with a lot of details that we have to put attention to when using them. In this case, the problem lies on the storage because there are variables specifically at slot 0 and 1 that clash, allowing us to explot that vulnerability switching back and forth the states of these two variables in this two contracts. The following two materials go deeper into proxy contracts:
+
+Proxy contracts: https://blog.openzeppelin.com/proxy-patterns/
+
+Delegatecall: https://medium.com/coinmonks/delegatecall-calling-another-contract-function-in-solidity-b579f804178c#:~:text=DelegateCall%2C%20as%20the%20name%20implies,contract%20but%20on%20caller%20contract.
+
+After you get setup and create a new instance, you can modify the contract's address in the _Attack24.js_ (there is a comment next to it). This will allow to get access to the victim contract and the ABI's of both contracts, this is since we'll be sending data to call functions instead of calling methods directly. First we will call the _proposeNewAdmin_ function from the _call_ method by passing the data because we are interacting with the implementation contract, you can also get the direct contract on Etherscan. After we are owners, we can call the _addToWhitelist_ to pass modifiers and call the _multicall_ function with an rray of two elements with one diferent to the deposit selector to pass require statement. Finally, call _execute_ function to drain funds from the contract and pass the other require statement to be able to change the variable that is in storage 0 by calling the _setMaxBalance_ function.
+
+## Challenge 25: Motorbike
