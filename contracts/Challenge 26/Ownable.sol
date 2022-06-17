@@ -2,7 +2,7 @@
 
 pragma solidity ^0.6.0;
 
-import "@openzeppelin/contracts-ethereum-package/contracts/GSN/Context.sol";
+import "@openzeppelin/contracts-ethereum-package/contracts/GSN/Context.sol"; // we have to import from the same path
 /**
  * @dev Contract module which provides a basic access control mechanism, where
  * there is an account (an owner) that can be granted exclusive access to
